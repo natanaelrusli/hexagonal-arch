@@ -10,7 +10,7 @@ import (
 // MongoConn:string > UserRepository > UserService > UserHandler > Server
 
 func main() {
-	mongoConn := "secrett"
+	mongoConn := "mongodb+srv://admin:admin@cluster0.dmvyscs.mongodb.net/?retryWrites=true&w=majority"
 
 	userRepository, _ := repositories.NewUserRepository(mongoConn)
 	userService := services.NewUserService(userRepository)

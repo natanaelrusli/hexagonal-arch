@@ -28,6 +28,10 @@ func (s *UserService) Login(email string, password string) error {
 }
 
 func (s *UserService) Register(email string, password string, confirmPass string) error {
+	if password == "" || email == "" {
+		return errors.New("both email are password are required")
+	}
+
 	if password != confirmPass {
 		return errors.New("the passwords are not equal")
 	}

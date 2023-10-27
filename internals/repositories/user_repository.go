@@ -2,9 +2,11 @@ package repositories
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/natanaelrusli/hexagonal-arch/internals/core/ports"
+	mongodb "github.com/natanaelrusli/hexagonal-arch/internals/mongodb/docstructures"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -32,6 +34,7 @@ func NewUserRepository(conn string) (*UserRepository, error) {
 	}
 
 	err = client.Ping(ctx, readpref.Primary())
+	log.Println("database connected")
 	if err != nil {
 		return nil, err
 	}
@@ -48,5 +51,16 @@ func (r *UserRepository) Login(email string, password string) error {
 }
 
 func (r *UserRepository) Register(email string, password string) error {
+	doc := new(mongodb.User)
+
+	doc.Email = email
+	doc.Password = password
+
+	_, err := r.collection.InsertOne(context.TODO(), doc)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

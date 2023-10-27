@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/natanaelrusli/hexagonal-arch/internals/core/ports"
+	requests "github.com/natanaelrusli/hexagonal-arch/internals/dto"
 )
 
 type UserHandlers struct {
@@ -29,13 +30,18 @@ func (h *UserHandlers) Login(c *fiber.Ctx) error {
 }
 
 func (h *UserHandlers) Register(c *fiber.Ctx) error {
-	var email string
-	var password string
-	var confirmPassword string
+	req := new(requests.UserRegisterRequest)
 
-	err := h.userService.Register(email, password, confirmPassword)
+	if err := c.BodyParser(req); err != nil {
+		return err
+	}
+
+	err := h.userService.Register(req.Email, req.Password, req.ConfirmPassword)
+
 	if err != nil {
 		return err
 	}
-	return nil
+	return c.JSON(fiber.Map{
+		"message": "new user registered",
+	})
 }
