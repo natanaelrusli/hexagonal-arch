@@ -1,6 +1,8 @@
 package ports
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+)
 
 type UserService interface {
 	Login(email string, password string) error

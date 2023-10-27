@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/natanaelrusli/hexagonal-arch/internals/core/ports"
-	requests "github.com/natanaelrusli/hexagonal-arch/internals/dto"
+	requests "github.com/natanaelrusli/hexagonal-arch/internals/dto/requests"
 )
 
 type UserHandlers struct {
