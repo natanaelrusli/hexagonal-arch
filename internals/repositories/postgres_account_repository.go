@@ -40,6 +40,26 @@ func NewPostgresAccountRepository() (*PostgresAccountRepository, error) {
 	}, nil
 }
 
-func (r *UserRepository) CreateAccount(*domain.Account) error {
+func (r *PostgresAccountRepository) CreateAccount(acc *domain.Account) error {
+	query := `insert into account 
+	(first_name, last_name, encrypted_password, number, balance, created_at)
+	values 
+	($1, $2, $3, $4, $5, $6)
+	`
+
+	_, err := r.db.Query(
+		query,
+		acc.FirstName,
+		acc.LastName,
+		acc.EncryptedPassword,
+		acc.Number,
+		acc.Balance,
+		acc.CreatedAt,
+	)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

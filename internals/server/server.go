@@ -7,29 +7,36 @@ import (
 	"github.com/natanaelrusli/hexagonal-arch/internals/core/ports"
 )
 
+// Server represents the main server structure.
 type Server struct {
-	// put every new handlers here
-	userHandlers ports.UserHandlers
-	// middlewares ports.IMiddlewares
-	// paymentHandlers ports.IPaymentHandlers
+	app *fiber.App
 }
 
-func NewServer(uHandlers ports.UserHandlers) *Server {
+// NewServer creates a new server instance.
+func NewServer() *Server {
 	return &Server{
-		userHandlers: uHandlers,
+		app: fiber.New(),
 	}
 }
 
-func (s *Server) Initialize() {
-	app := fiber.New()
-	v1 := app.Group("/v1")
+// InitializeUserHandlers initializes user-related handlers.
+func (s *Server) InitializeUserHandlers(uHandlers ports.UserHandlers) {
+	v1 := s.app.Group("/v1/user")
+	v1.Post("/login", uHandlers.Login)
+	v1.Post("/register", uHandlers.Register)
+}
 
-	userRoutes := v1.Group("/user")
-	userRoutes.Post("/login", s.userHandlers.Login)
-	userRoutes.Post("/register", s.userHandlers.Register)
+// InitializeAccountHandlers initializes account-related handlers.
+func (s *Server) InitializeAccountHandlers(accHandlers ports.AccountHandlers) {
+	v1 := s.app.Group("/v1/account")
+	v1.Post("/create", accHandlers.CreateAccount)
+	// Add other account handlers as needed...
+}
 
-	err := app.Listen(":8000")
+// StartServer starts the server on the specified port.
+func (s *Server) StartServer(port string) {
+	err := s.app.Listen(":" + port)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error starting server: %v", err)
 	}
 }

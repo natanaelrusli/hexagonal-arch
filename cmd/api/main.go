@@ -34,9 +34,13 @@ func main() {
 	userService := services.NewUserService(userRepository)
 	userHandlers := handlers.NewUserHandlers(userService)
 
-	httpServer := server.NewServer(
-		userHandlers,
-	)
+	accountRepository, _ := repositories.NewPostgresAccountRepository()
+	accountService := services.NewAccountService(accountRepository)
+	accountHandlers := handlers.NewAccountHandlers(accountService)
 
-	httpServer.Initialize()
+	server := server.NewServer()
+	server.InitializeAccountHandlers(accountHandlers)
+	server.InitializeUserHandlers(userHandlers)
+
+	server.StartServer("8000")
 }
